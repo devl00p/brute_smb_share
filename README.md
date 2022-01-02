@@ -6,4 +6,6 @@ The script uses the official Python library from the Samba project, not Impacket
 
 You may find the library with a name like "samba-python3" in your package manager.
 
+`Usage: python brute_smb_share.py <ip_address> <share_name> <users_wordlist> <passwords_wordlist>`
+
 MIT Licence
