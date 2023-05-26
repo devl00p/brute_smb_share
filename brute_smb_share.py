@@ -51,6 +51,25 @@ with open(sys.argv[3], errors="ignore", encoding="utf-8") as users_fd:
         if not user:
             continue
 
+        # Check with empty password
+        creds.set_username(user)
+        creds.set_password("")
+
+        try:
+            smbconn = libsmb.Conn(ip, share, lp=lp3, creds=creds)
+            for entry in smbconn.list("/"):
+                print(f"\t{entry['name']}")
+        except NTSTATUSError as exception:
+            if "The attempted logon is invalid" in exception.args[1]:
+                continue
+            elif "Access Denied" in exception.args[1]:
+                continue
+            elif "A process has requested access to an object but has not been granted those access rights" in exception.args[1]:
+                continue
+        else:
+            print(f"Success with user {user} and empty password")
+
+        # Check with a password of the wordlist
         with open(sys.argv[4], errors="ignore", encoding="utf-8") as passwords_fd:
             for password in passwords_fd:
                 password = password.strip()
